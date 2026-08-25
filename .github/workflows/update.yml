@@ -1,9 +1,9 @@
-# Hourly CNN Fear & Greed updater
+# Redundant CNN Fear & Greed updater
 name: Update CNN Fear & Greed
 
 on:
   schedule:
-    - cron: '17 * * * *'
+    - cron: '17,47 * * * *'
   workflow_dispatch:
   push:
     paths:
