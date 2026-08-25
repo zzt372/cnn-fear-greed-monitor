@@ -1,3 +1,4 @@
+# Hourly CNN Fear & Greed updater
 name: Update CNN Fear & Greed
 
 on:
