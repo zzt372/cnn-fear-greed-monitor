@@ -2,10 +2,10 @@
   "score": 59.0857142857143,
   "rating": "Greed",
   "category": "Greed",
-  "timestamp": "2026-08-26T11:27:46Z",
+  "timestamp": "2026-08-26T11:58:01Z",
   "source": "CNN official",
   "source_url": "https://production.dataviz.cnn.io/index/fearandgreed/graphdata",
   "endpoint": "root JSON",
-  "fetched_at": "2026-08-26T11:45:11.289984Z",
+  "fetched_at": "2026-08-26T12:17:55.738314Z",
   "ok": true
 }
