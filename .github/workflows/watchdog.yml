@@ -16,7 +16,7 @@ permissions:
 
 concurrency:
   group: cnn-fear-greed-update
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   watchdog:
@@ -51,8 +51,6 @@ jobs:
               else:
                   dt = datetime.fromisoformat(raw.replace('Z', '+00:00')).astimezone(timezone.utc)
                   age = (datetime.now(timezone.utc) - dt).total_seconds()
-                  # Primary updater normally runs every 30 minutes. Give it room
-                  # for normal GitHub schedule delay, then self-heal.
                   refresh = age >= 45 * 60
                   reason = f'heartbeat age={age/60:.1f} minutes'
           except Exception as exc:
