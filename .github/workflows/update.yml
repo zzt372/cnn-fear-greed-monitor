@@ -1,8 +1,10 @@
-# Redundant CNN Fear & Greed updater
+# Primary CNN Fear & Greed updater
 name: Update CNN Fear & Greed
 
 on:
   schedule:
+    # Keep away from the top of the hour. GitHub documents that scheduled
+    # workflows can be delayed or dropped under load.
     - cron: '17,47 * * * *'
   workflow_dispatch:
   push:
@@ -20,11 +22,13 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 7
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -35,7 +39,10 @@ jobs:
         run: python fetch.py
 
       - name: Commit latest data
+        shell: bash
         run: |
+          set -euo pipefail
+
           if git diff --quiet -- latest.json; then
             echo "latest.json is unchanged"
             exit 0
@@ -45,4 +52,17 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add latest.json
           git commit -m "Update CNN Fear & Greed data"
-          git push
+
+          # A watchdog run may have committed at nearly the same time.
+          # Retry the push after rebasing instead of failing the whole update.
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "push attempt ${attempt} failed; rebasing and retrying"
+            git pull --rebase origin main
+            sleep $((attempt * 2))
+          done
+
+          echo "git push failed after retries" >&2
+          exit 1
