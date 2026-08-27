@@ -17,7 +17,7 @@ permissions:
 
 concurrency:
   group: cnn-fear-greed-update
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   update:
@@ -53,8 +53,6 @@ jobs:
           git add latest.json
           git commit -m "Update CNN Fear & Greed data"
 
-          # A watchdog run may have committed at nearly the same time.
-          # Retry the push after rebasing instead of failing the whole update.
           for attempt in 1 2 3; do
             if git push origin HEAD:main; then
               exit 0
